@@ -1,36 +1,61 @@
-import type { MetaFunction } from "@remix-run/node";
+import {
+  json,
+  type LoaderFunctionArgs,
+  type ActionFunctionArgs,
+} from "@remix-run/cloudflare";
+import { Form, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
+import { Input } from "~/components/ui/input";
 
-export const meta: MetaFunction = () => {
-  return [
-    { title: "New Remix SPA" },
-    { name: "description", content: "Welcome to Remix (SPA Mode)!" },
-  ];
-};
+const key = "__my-key__";
+
+export async function loader({ context }: LoaderFunctionArgs) {
+  const { MY_KV } = context.env;
+  const value = await MY_KV.get(key);
+  return json({ value });
+}
+
+export async function action({ request, context }: ActionFunctionArgs) {
+  const { MY_KV: myKv } = context.env;
+
+  if (request.method === "POST") {
+    const formData = await request.formData();
+    const value = formData.get("value") as string;
+    await myKv.put(key, value);
+    return null;
+  }
+
+  if (request.method === "DELETE") {
+    await myKv.delete(key);
+    return null;
+  }
+
+  throw new Error(`Method not supported: "${request.method}"`);
+}
 
 export default function Index() {
+  const { value } = useLoaderData<typeof loader>();
   return (
-    <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <h1>Welcome to Remix (SPA Mode)</h1>
-      <ul>
-        <li>
-          <Button asChild>
-            <a
-              target="_blank"
-              href="https://remix.run/future/spa-mode"
-              rel="noreferrer"
-            >
-              SPA Mode Guide
-            </a>
-          </Button>
-
-        </li>
-        <li>
-          <a target="_blank" href="https://remix.run/docs" rel="noreferrer">
-            Remix Docs
-          </a>
-        </li>
-      </ul>
+    <div>
+      <h1>Welcome to Remix</h1>
+      {value ? (
+        <>
+          <p>Value: {value}</p>
+          <Form method="DELETE">
+            <Button>Delete</Button>
+          </Form>
+        </>
+      ) : (
+        <>
+          <p>No value</p>
+          <Form method="POST">
+            <label htmlFor="value">Set value: </label>
+            <Input type="text" name="value" id="value" required />
+            <br />
+            <Button>Save</Button>
+          </Form>
+        </>
+      )}
     </div>
   );
 }
