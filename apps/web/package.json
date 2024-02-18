@@ -21,11 +21,15 @@
     "isbot": "^4.1.0",
     "lucide-react": "^0.330.0",
     "miniflare": "^3.20231030.4",
+    "nanoid": "^5.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "sonner": "^1.4.0",
+    "spin-delay": "^1.2.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "viem": "^2.7.9"
+    "viem": "^2.7.9",
+    "zod": "^3.22.4"
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20230518.0",
@@ -50,6 +54,6 @@
     "wrangler": "^3.24.0"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=19.0.0"
   }
 }

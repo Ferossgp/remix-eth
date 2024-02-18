@@ -6,6 +6,7 @@ import {
 import { Form, useLoaderData } from "@remix-run/react";
 import { Button } from "~/components/ui/button";
 import { Input } from "~/components/ui/input";
+import { createToastHeaders } from "~/utils/toast.server";
 
 const key = "__my-key__";
 
@@ -22,12 +23,29 @@ export async function action({ request, context }: ActionFunctionArgs) {
     const formData = await request.formData();
     const value = formData.get("value") as string;
     await myKv.put(key, value);
-    return null;
+
+    return json(
+      { success: true },
+      {
+        headers: await createToastHeaders({
+          description: "Value created!",
+          type: "success",
+        }, context.env),
+      }
+    );
   }
 
   if (request.method === "DELETE") {
     await myKv.delete(key);
-    return null;
+    return json(
+      { success: true },
+      {
+        headers: await createToastHeaders({
+          description: "Value deleted!",
+          type: "success",
+        }, context.env),
+      }
+    );
   }
 
   throw new Error(`Method not supported: "${request.method}"`);

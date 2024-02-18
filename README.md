@@ -8,7 +8,7 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `web`: Remix SPA app
+- `web`: Remix SPA app based on Cloudflate Pages template and [Epic Stack](https://github.com/epicweb-dev/epic-stack)
 - `hardhat`: a Hardhat project to develop and deploy Ethereum smart contracts
 
 ### Utilities
